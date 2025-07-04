@@ -330,7 +330,17 @@ Remember: You're building your agency, learning from every project, and genuinel
       );
       
       // Remove surrounding quotes that might have been added by the LLM
-      cleanedContent = cleanedContent.replace(/^["'"''""]+|["'"''""]+$/g, "").trim();
+      // This handles various quote types and also removes quotes with spaces
+      cleanedContent = cleanedContent.replace(/^[\s"'"''""]*|[\s"'"''""]*$/g, "").trim();
+      
+      // Additional cleanup for quotes that might be at the start after spaces
+      cleanedContent = cleanedContent.replace(/^["'"''""]+\s*|^\s*["'"''""]+/, "").trim();
+      
+      // Remove any remaining quotes at the end
+      cleanedContent = cleanedContent.replace(/\s*["'"''""]+$|["'"''""]+\s*$/, "").trim();
+      
+      // Final aggressive quote cleanup - remove any quote marks that are standalone or at word boundaries
+      cleanedContent = cleanedContent.replace(/^["'"''""]\s+|^["'"''""]+\b|\b["'"''""]+$|\s+["'"''""]+$/g, "").trim();
       
       // Ensure complete posts under 250 characters
       if (cleanedContent.length > 250) {
